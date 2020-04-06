@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://use.fontawesome.com/a99e6a1c96.css">
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+        <script src="constants.js"></script>
+        <script src="board.js"></script>
+        <script src="script.js"></script>
+        <script src="gui.js"></script>
+    </head>
+    <body>
+        <div class="split left">
+                <div style="padding-left:1em">
+                    <button onclick = 'alert("Ещё не работает")'><i class="fa fa-upload"></i></button>
+                    <button onclick = "download(JSON.stringify(strategy, null, '\t'), '1-str.json', 'json')"><i class="fa fa-download"></i></i></button>
+                </div>
+                <div style="padding-left:1em">
+                    <span id='coords'></span>
+                    <span style='display:inline-block; width:8em;' id='time'><b>TIME: </b> 0</span>
+                    <span style='display:inline-block; width:12em;' id='score'><b>SCORE:</b> 0 <span style='color:gray;'>(abs max 129)</span> </span>
+                </div>
+                <div id="sketch-holder"></div>
+                <center>
+                    <button class='play_button' style='display:none;' onclick = 'restart()'><i class="fa fa-undo"></i></button>
+                    <button class='play_button' onclick = 'restart()'><i class="fa fa-play"></i></button>
+                    <button class='play_button' style='display:none;' onclick = 'restart()'><i class="fa fa-pause"></i></button>
+                </center>
+
+                <div class="ps">
+                    <br>
+                    Для интерактивного редактирования точек: тык на нужном `move`, затем двойной клик на поле. Вращение робота - A, D на клавиатуре<br>
+                    В конце комментария к команде можно прописать:<br>
+                    &nbsp;&nbsp;#TAKE 4 0 3 5 - взять стаканы с пола (буи с id 4 и 3 попадают в ячейки робота 0 и 5 соотв)<br>
+                    &nbsp;&nbsp;#DROP 2 1 - выгрузить из ячеек 2 и 1 (нужно не всегда, выгрузка автоматически срабатывает в SetLowDynamixelPoses)<br>
+                    &nbsp;&nbsp;#PUT5 red green red green red - выгрузка стаканчиков с полки<br>
+                    &nbsp;&nbsp;#FINISH - остановка, прекращается исполнение дальнейших команд и счет времени<br>
+                    Кстати изменения стратегии сразу применяются к симуляции
+                </div>
+        </div>
+          
+        <div class="split right">
+            <table class="patterns-and-commands">
+                <tr>
+                    <td>
+                        <h2>patterns:</h2>
+
+                        <div id="patterns" style="overflow-y: scroll; overflow-x:hidden; height:90%;"></div>
+
+                    </td>
+                    <td>
+                        <h2 contenteditable="true" id="current_pattern_name">selected pattern</h2>
+                        <span style="display: inline-block; width: 5em;">priority:</span><br>
+                        <input id="current_pattern_priority" type="number" oninput="updPriority()" style="width: 4em; height: 2em" value="1" /><br>
+
+                        <span style="display: inline-block; width: 5em;">comment:</span><br>
+                        <input id="current_pattern_comment" oninput="updComment()" type="text" style="width: 100%; height: 2em" value="test comment" /><br><br>
+                        
+                        <span style="display: inline-block; width: 5em;">commands:</span>
+                        
+                        <div style="overflow-y: scroll; overflow-x:hidden; height:75%;">
+                            <div id="commands"></div>
+
+                            <div class="add_cmd">
+                                <h3 style="margin-bottom: .1em; padding-bottom: .1em;">new command</h3><br>
+                                <button onclick="addNewCommand('move'); showPatternInfo(current_pattern_name);">move</button>
+                                <button onclick="addNewCommand('send_stm_cmd'); showPatternInfo(current_pattern_name);">send_stm_cmd</button>
+                                <button onclick="addNewCommand('sleep'); showPatternInfo(current_pattern_name);">sleep</button>
+                                <button onclick="addNewCommand('add_score'); showPatternInfo(current_pattern_name);">add_score</button>
+                                <button onclick="addNewCommand('wait_status'); showPatternInfo(current_pattern_name);">wait_status</button>
+                                <button onclick="addNewCommand('empty'); showPatternInfo(current_pattern_name);">empty</button>
+                            </div>
+                            <br><br>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>
